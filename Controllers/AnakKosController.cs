@@ -22,9 +22,9 @@ namespace Kosku.Controllers
         [HttpPost]
         public IActionResult saveAnakKos(AnakKos anakKos)
         {
-            AnakKosService.addAnakKos(anakKos);
+            var result = AnakKosService.addAnakKos(anakKos);
 
-            return CreatedAtAction(nameof(saveAnakKos), new { id = anakKos._id }, anakKos);
+            return CreatedAtAction(nameof(saveAnakKos), new { id = result._id }, anakKos);
         }
 
         [HttpGet("{id}")]
