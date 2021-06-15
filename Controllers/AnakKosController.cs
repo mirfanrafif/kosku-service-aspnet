@@ -48,7 +48,7 @@ namespace Kosku.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAnakKos(AnakKos anakKos, int id)
+        public async Task<ActionResult<AnakKos>> UpdateAnakKos(AnakKos anakKos, int id)
         {
             if (id != anakKos.id)
             {
@@ -56,8 +56,27 @@ namespace Kosku.Controllers
             }
 
             _context.Entry(anakKos).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return NoContent();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                if(!AnakKosExist(id)) {
+                    return NotFound();
+                }else
+                {
+                    throw;
+                }
+            }
+
+            return await _context.AnakKos.FindAsync(id);
+        }
+
+        private bool AnakKosExist(int id)
+        {
+            return _context.AnakKos.Any(e => e.id == id);
         }
 
         [HttpDelete("{id}")]
