@@ -12,11 +12,11 @@ namespace Kosku.Repositories
 
         public void Add(AnakKos anakKos);
 
-        public AnakKos Find(int id);
+        public Task<AnakKos> Find(int id);
 
-        public AnakKos Update(int id, AnakKos anakKos);
+        public Task<AnakKos> Update(int id, AnakKos anakKos);
 
-        public AnakKos Delete(int id);
+        public Task<AnakKos> Delete(int id);
 
     }
 }

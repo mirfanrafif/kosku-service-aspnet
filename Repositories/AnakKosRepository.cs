@@ -22,9 +22,9 @@ namespace Kosku.Repositories
             _context.SaveChanges();
         }
 
-        public AnakKos Delete(int id)
+        public async Task<AnakKos> Delete(int id)
         {
-            AnakKos anakKos = Find(id);
+            AnakKos anakKos = await Find(id);
             if (anakKos == null) return null;
 
             _context.AnakKos.Remove(anakKos);
@@ -32,7 +32,7 @@ namespace Kosku.Repositories
             return anakKos;
         }
 
-        public AnakKos Find(int id)
+        public async Task<AnakKos> Find(int id)
         {   
             return _context.AnakKos.Find(id);
         }
@@ -42,16 +42,16 @@ namespace Kosku.Repositories
             return _context.AnakKos.ToList();
         }
 
-        public AnakKos Update(int id, AnakKos anakKos)
+        public async Task<AnakKos> Update(int id, AnakKos anakKos)
         {
-            if (!AnakKosExist(id)) return null;
+            if (!await AnakKosExist(id)) return null;
 
             _context.Entry(anakKos).State = EntityState.Modified;
             _context.SaveChanges();
-            return Find(id);
+            return await Find(id);
         }
 
-        private bool AnakKosExist(int id)
+        private async Task<bool> AnakKosExist(int id)
         {
             return _context.AnakKos.Any(e => e.id == id);
         }

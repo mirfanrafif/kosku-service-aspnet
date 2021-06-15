@@ -64,12 +64,13 @@ namespace Kosku
 
             app.UseHttpsRedirection();
 
+            //app.UseIdentityServer();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", name: "Kosku API");
-                c.RoutePrefix = string.Empty;
             });
 
             app.UseRouting();
