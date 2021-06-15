@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Kosku.Model;
 using Kosku.Controllers;
 using Microsoft.EntityFrameworkCore;
-using Kosku.Services;
 
 namespace Kosku
 {
@@ -31,7 +30,6 @@ namespace Kosku
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IAnakKosService, AnakKosService>();
             services.AddCors(options =>
             {
                 options.AddPolicy(MyOrigin, builder =>

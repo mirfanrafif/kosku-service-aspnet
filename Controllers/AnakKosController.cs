@@ -1,8 +1,13 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Kosku.Model;
-using Kosku.Services;
 using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
+using System.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Kosku.Controllers
 {
@@ -12,42 +17,59 @@ namespace Kosku.Controllers
     public class AnakKosController : ControllerBase
     {
 
+        private AnakKosContext _context;
 
-        private IAnakKosService _service;
-        public AnakKosController(IAnakKosService service)
+        public AnakKosController(AnakKosContext context)
         {
-            _service = service;
+            _context = context;
         }
 
         [HttpGet]
-        public List<AnakKos> GetAll() => _service.GetAllAnakKos();
+        public IQueryable<AnakKos> getAllAnakKos() {
+            return _context.AnakKos; 
+        }
+
 
         [HttpPost]
-        public IActionResult saveAnakKos(AnakKos anakKos)
+        public async Task<ActionResult<AnakKos>> SaveAnakKos(AnakKos anakKos)
         {
-            var result = _service.AddAnakKos(anakKos);
+            _context.AnakKos.Add(anakKos);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(saveAnakKos), new { id = result.id }, anakKos);
+            return CreatedAtAction(nameof(SaveAnakKos), new { anakKos.id }, anakKos);
         }
 
         [HttpGet("{id}")]
-        public AnakKos findAnakKos(int id)
+        public async Task<ActionResult<AnakKos>> FindAnakKos(int id)
         {
-            return _service.FindAnakKos(id);
+            var data = await _context.AnakKos.FindAsync(id);
+            if (data == null) return NotFound();
+            return data;
         }
 
         [HttpPut("{id}")]
-        public IActionResult updateAnakKos(AnakKos anakKos, int id)
+        public async Task<IActionResult> UpdateAnakKos(AnakKos anakKos, int id)
         {
-            _service.UpdateAnakKos(anakKos, id);
+            if (id != anakKos.id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(anakKos).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult deleteAnakKos(int id)
+        public async Task<ActionResult<AnakKos>> DeleteAnakKos(int id)
         {
-            _service.DeleteAnakKos(id);
-            return NoContent();
+            var data = await _context.AnakKos.FindAsync(id);
+            if (data == null) return NotFound();
+
+            _context.AnakKos.Remove(data);
+            await _context.SaveChangesAsync();
+
+            return data;
         }
 
 
