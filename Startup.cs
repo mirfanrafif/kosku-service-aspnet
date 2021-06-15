@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Kosku.Model;
 using Kosku.Controllers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace Kosku
 {
@@ -45,7 +46,17 @@ namespace Kosku
             {
                 options.UseSqlServer(connectionString);
             });
+
             services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Version = "v1",
+                    Title = "Kosku API",
+                    Description = "Belajar REST API mengggunakan ASP.NET"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +68,14 @@ namespace Kosku
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", name: "Kosku API");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
