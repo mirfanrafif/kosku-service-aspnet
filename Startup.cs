@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Kosku.Model;
+using Kosku.Controllers;
+using Microsoft.EntityFrameworkCore;
+using Kosku.Services;
 
 namespace Kosku
 {
@@ -27,14 +31,21 @@ namespace Kosku
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IAnakKosService, AnakKosService>();
             services.AddCors(options =>
             {
                 options.AddPolicy(MyOrigin, builder =>
                 {
-                    builder.AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-                });
+                        builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
+
+            var connectionString = Configuration.GetConnectionString("KoskuConnections");
+            services.AddDbContext<AnakKosContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
             });
             services.AddControllers();
         }
