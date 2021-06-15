@@ -25,8 +25,9 @@ namespace Kosku.Controllers
         }
 
         [HttpGet]
-        public IQueryable<AnakKos> getAllAnakKos() {
-            return _context.AnakKos; 
+        public IQueryable<AnakKos> getAllAnakKos()
+        {
+            return _context.AnakKos;
         }
 
 
@@ -63,9 +64,11 @@ namespace Kosku.Controllers
             }
             catch
             {
-                if(!AnakKosExist(id)) {
+                if (!AnakKosExist(id))
+                {
                     return NotFound();
-                }else
+                }
+                else
                 {
                     throw;
                 }
