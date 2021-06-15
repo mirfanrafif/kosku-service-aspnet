@@ -1,4 +1,4 @@
-namespace Kosku.Model
+namespace Kosku.Data.Entities
 {
     public class AnakKos
     {

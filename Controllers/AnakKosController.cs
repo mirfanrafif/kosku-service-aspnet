@@ -1,13 +1,15 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Kosku.Model;
+using Kosku.Data.Model;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Kosku.Data.Entities;
+using Kosku.Repositories;
 
 namespace Kosku.Controllers
 {
@@ -17,79 +19,48 @@ namespace Kosku.Controllers
     public class AnakKosController : ControllerBase
     {
 
-        private AnakKosContext _context;
+        private IAnakKosRepository _repository;
 
-        public AnakKosController(AnakKosContext context)
+        public AnakKosController(IAnakKosRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
-        public IQueryable<AnakKos> getAllAnakKos()
-        {
-            return _context.AnakKos;
-        }
-
+        public List<AnakKos> getAllAnakKos() => _repository.GetAll();
 
         [HttpPost]
-        public async Task<ActionResult<AnakKos>> SaveAnakKos(AnakKos anakKos)
+        public ActionResult<AnakKos> SaveAnakKos(AnakKos anakKos)
         {
-            _context.AnakKos.Add(anakKos);
-            await _context.SaveChangesAsync();
+            _repository.Add(anakKos);
 
             return CreatedAtAction(nameof(SaveAnakKos), new { anakKos.id }, anakKos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AnakKos>> FindAnakKos(int id)
+        public ActionResult<AnakKos> FindAnakKos(int id)
         {
-            var data = await _context.AnakKos.FindAsync(id);
+            var data = _repository.Find(id);
             if (data == null) return NotFound();
             return data;
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AnakKos>> UpdateAnakKos(AnakKos anakKos, int id)
+        public ActionResult<AnakKos> UpdateAnakKos(AnakKos anakKos, int id)
         {
-            if (id != anakKos.id)
-            {
-                return BadRequest();
-            }
+            if (id != anakKos.id) return BadRequest();
 
-            _context.Entry(anakKos).State = EntityState.Modified;
+            var updatedData = _repository.Update(id, anakKos);
+            if (updatedData == null) return NotFound();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                if (!AnakKosExist(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return await _context.AnakKos.FindAsync(id);
-        }
-
-        private bool AnakKosExist(int id)
-        {
-            return _context.AnakKos.Any(e => e.id == id);
+            return updatedData;
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<AnakKos>> DeleteAnakKos(int id)
+        public ActionResult<AnakKos> DeleteAnakKos(int id)
         {
-            var data = await _context.AnakKos.FindAsync(id);
+            var data = _repository.Delete(id);
             if (data == null) return NotFound();
-
-            _context.AnakKos.Remove(data);
-            await _context.SaveChangesAsync();
 
             return data;
         }
