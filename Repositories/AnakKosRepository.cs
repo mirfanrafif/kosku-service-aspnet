@@ -16,10 +16,10 @@ namespace Kosku.Repositories
             _context = context;
         }
 
-        public void Add(AnakKos anakKos)
+        public async Task<int> Add(AnakKos anakKos)
         {
             _context.AnakKos.Add(anakKos);
-            _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<AnakKos> Delete(int id)
@@ -34,12 +34,12 @@ namespace Kosku.Repositories
 
         public async Task<AnakKos> Find(int id)
         {   
-            return _context.AnakKos.Find(id);
+            return await _context.AnakKos.FindAsync(id);
         }
 
-        public List<AnakKos> GetAll()
+        public async Task<List<AnakKos>> GetAll()
         {
-            return _context.AnakKos.ToList();
+            return await _context.AnakKos.ToListAsync();
         }
 
         public async Task<AnakKos> Update(int id, AnakKos anakKos)
@@ -47,13 +47,13 @@ namespace Kosku.Repositories
             if (!await AnakKosExist(id)) return null;
 
             _context.Entry(anakKos).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return await Find(id);
         }
 
         private async Task<bool> AnakKosExist(int id)
         {
-            return _context.AnakKos.Any(e => e.id == id);
+            return await _context.AnakKos.AnyAsync(e => e.id == id);
         }
     }
 }

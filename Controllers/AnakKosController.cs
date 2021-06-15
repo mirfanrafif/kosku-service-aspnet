@@ -20,12 +20,12 @@ namespace Kosku.Controllers
         }
 
         [HttpGet]
-        public async Task<List<AnakKos>> getAllAnakKos() => _repository.GetAll();
+        public async Task<List<AnakKos>> getAllAnakKos() => await _repository.GetAll();
 
         [HttpPost]
         public async Task<ActionResult<AnakKos>> SaveAnakKos(AnakKos anakKos)
         {
-            _repository.Add(anakKos);
+            await _repository.Add(anakKos);
 
             return CreatedAtAction(nameof(SaveAnakKos), new { anakKos.id }, anakKos);
         }
@@ -39,20 +39,20 @@ namespace Kosku.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<AnakKos> UpdateAnakKos(AnakKos anakKos, int id)
+        public async Task<ActionResult<AnakKos>> UpdateAnakKos(AnakKos anakKos, int id)
         {
             if (id != anakKos.id) return BadRequest();
 
-            var updatedData = _repository.Update(id, anakKos);
+            var updatedData = await _repository.Update(id, anakKos);
             if (updatedData == null) return NotFound();
 
             return updatedData;
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<AnakKos> DeleteAnakKos(int id)
+        public async Task<ActionResult<AnakKos>> DeleteAnakKos(int id)
         {
-            var data = _repository.Delete(id);
+            var data = await _repository.Delete(id);
             if (data == null) return NotFound();
 
             return data;

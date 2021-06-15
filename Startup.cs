@@ -24,6 +24,11 @@ namespace Kosku
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var builder = services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryApiScopes(Config.ApiScopes)
+                .AddInMemoryClients(Config.Clients);
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyOrigin, builder =>
@@ -64,7 +69,7 @@ namespace Kosku
 
             app.UseHttpsRedirection();
 
-            //app.UseIdentityServer();
+            app.UseIdentityServer();
 
             app.UseSwagger();
 

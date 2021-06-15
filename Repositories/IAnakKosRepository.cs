@@ -8,9 +8,9 @@ namespace Kosku.Repositories
 {
     public interface IAnakKosRepository
     {
-        public List<AnakKos> GetAll();
+        public Task<List<AnakKos>> GetAll();
 
-        public void Add(AnakKos anakKos);
+        public Task<int> Add(AnakKos anakKos);
 
         public Task<AnakKos> Find(int id);
 
