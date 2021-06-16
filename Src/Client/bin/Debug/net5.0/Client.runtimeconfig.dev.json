@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\mirfa\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\mirfa\\.nuget\\packages"
+    ]
+  }
+}
