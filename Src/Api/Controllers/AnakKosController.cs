@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Kosku.Data.Entities;
 using Kosku.Repositories;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kosku.Controllers
 {
 
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class AnakKosController : ControllerBase
     {
 
