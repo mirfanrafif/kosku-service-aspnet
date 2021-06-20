@@ -28,7 +28,9 @@ namespace IdentityServer
                     ClientSecrets = {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = {"api1"}
+                    AllowedScopes = {
+                        "api1"
+                        }
                 }
              };
     }
