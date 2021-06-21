@@ -32,10 +32,10 @@ namespace Kosku
             {
                 options.AddPolicy(MyOrigin, builder =>
                 {
-                        builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                    });
+                    builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
             });
 
             services.AddScoped<IAnakKosRepository, AnakKosRepository>();
@@ -56,29 +56,30 @@ namespace Kosku
 
             services.AddControllers();
 
-            //services.AddAuthentication("Bearer")
-            //    .AddJwtBearer("Bearer", options =>
-            //    {
-            //        options.Authority = "https://localhost:5001";
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateAudience = false
-            //        };
-            //    });
+            services.AddAuthentication("Bearer")
+               .AddJwtBearer("Bearer", options =>
+               {
+                   options.Authority = "https://localhost:5001";
+                   options.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateAudience = false
+                   };
+               });
 
-            //// adds an authorization policy to make sure the token is for scope 'api1'
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("ApiScope", policy =>
-            //    {
-            //        policy.RequireAuthenticatedUser();
-            //        policy.RequireClaim("scope", "api1");
-            //    });
-            //});
+            // adds an authorization policy to make sure the token is for scope 'api1'
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "api1");
+                });
+            });
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
                     Version = "v1",
                     Title = "Kosku API",
                     Description = "Belajar REST API mengggunakan ASP.NET"
@@ -108,9 +109,9 @@ namespace Kosku
 
             app.UseCors(MyOrigin);
 
-            //app.UseAuthentication();
+            app.UseAuthentication();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseMiddleware<JwtMiddleware>();
 

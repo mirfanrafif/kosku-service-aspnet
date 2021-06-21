@@ -14,7 +14,7 @@ namespace IdentityServer
             new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -39,9 +39,10 @@ namespace IdentityServer
                     ClientSecrets = {
                         new Secret("secret".Sha256())
                     },
+                    // AllowAccessTokensViaBrowser = true,
 
-                    RedirectUris = {"https://localhost:4200/signin-callback"},
-                    PostLogoutRedirectUris = {"https://localhost:4200/signout-callback"},
+                    RedirectUris = {"http://localhost:4200/signin-callback"},
+                    PostLogoutRedirectUris = {"http://localhost:4200/signout-callback"},
 
                     AllowedGrantTypes = GrantTypes.Code,
                     AllowedScopes = {
