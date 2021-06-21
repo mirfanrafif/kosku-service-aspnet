@@ -3,6 +3,7 @@
 
 
 using IdentityServer4.Services;
+using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,10 +29,15 @@ namespace IdentityServer
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients);
+                .AddInMemoryClients(Config.Clients)
+                .AddTestUsers(TestUsers.Users);
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
+
+            services.AddRouting();
+            services.AddControllers();
+            services.AddRazorPages();
 
             services.AddSingleton<ICorsPolicyService>((container) =>
             {
@@ -52,16 +58,17 @@ namespace IdentityServer
 
             // uncomment if you want to add MVC
             //app.UseStaticFiles();
-            //app.UseRouting();
+            app.UseRouting();
 
             app.UseIdentityServer();
 
             // uncomment, if you want to add MVC
             //app.UseAuthorization();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapDefaultControllerRoute();
-            //});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
+            });
         }
     }
 }
