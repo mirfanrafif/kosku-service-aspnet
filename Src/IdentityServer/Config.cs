@@ -45,6 +45,7 @@ namespace IdentityServer
                     PostLogoutRedirectUris = {"http://localhost:4200/signout-callback"},
 
                     AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
