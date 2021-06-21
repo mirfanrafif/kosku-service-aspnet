@@ -8,10 +8,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kosku.Repositories
 {
+
+    public interface IAnakKosRepository
+    {
+        public Task<List<AnakKos>> GetAll();
+
+        public Task<int> Add(AnakKos anakKos);
+
+        public Task<AnakKos> Find(int id);
+
+        public Task<AnakKos> Update(int id, AnakKos anakKos);
+
+        public Task<AnakKos> Delete(int id);
+
+    }
     public class AnakKosRepository : IAnakKosRepository
     {
         private AnakKosContext _context;
-        public AnakKosRepository( AnakKosContext context )
+        public AnakKosRepository(AnakKosContext context)
         {
             _context = context;
         }
@@ -33,7 +47,7 @@ namespace Kosku.Repositories
         }
 
         public async Task<AnakKos> Find(int id)
-        {   
+        {
             return await _context.AnakKos.FindAsync(id);
         }
 

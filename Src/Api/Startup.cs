@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Kosku.Repositories;
 using Microsoft.IdentityModel.Tokens;
+using Kosku.Middleware;
+using Kosku.Helpers;
+using Microsoft.IdentityModel.Logging;
 
 namespace Kosku
 {
@@ -36,34 +39,42 @@ namespace Kosku
             });
 
             services.AddScoped<IAnakKosRepository, AnakKosRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             var connectionString = Configuration.GetConnectionString("KoskuConnections");
+
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
             services.AddDbContext<AnakKosContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
+            services.AddDbContext<UserContext>(options =>
             {
                 options.UseSqlServer(connectionString);
             });
 
             services.AddControllers();
 
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
-                {
-                    options.Authority = "https://localhost:5001";
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = false
-                    };
-                });
+            //services.AddAuthentication("Bearer")
+            //    .AddJwtBearer("Bearer", options =>
+            //    {
+            //        options.Authority = "https://localhost:5001";
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateAudience = false
+            //        };
+            //    });
 
-            // adds an authorization policy to make sure the token is for scope 'api1'
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiScope", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "api1");
-                });
-            });
+            //// adds an authorization policy to make sure the token is for scope 'api1'
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("ApiScope", policy =>
+            //    {
+            //        policy.RequireAuthenticatedUser();
+            //        policy.RequireClaim("scope", "api1");
+            //    });
+            //});
 
             services.AddSwaggerGen(c =>
             {
@@ -81,6 +92,7 @@ namespace Kosku
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                IdentityModelEventSource.ShowPII = true;
             }
 
             app.UseHttpsRedirection();
@@ -96,13 +108,15 @@ namespace Kosku
 
             app.UseCors(MyOrigin);
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireAuthorization("ApiScope");
+                endpoints.MapControllers();
             });
         }
     }
